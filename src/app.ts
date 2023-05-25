@@ -35,7 +35,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // 2. Cors
-  const whitelist = ['https://alexsong3.com/', 'https://www.alexsong3.com/', config.get<string>('origin')]
+  const whitelist = ['https://alexsong3.com', 'https://www.alexsong3.com', 'http://localhost:3000', config.get<string>('origin')]
   const corsOptions = {
     origin: function (origin: any, callback: any) {
       if (whitelist.indexOf(origin) !== -1) {
