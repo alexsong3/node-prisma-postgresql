@@ -20,7 +20,7 @@ import config from 'config';
 import AppError from '../utils/appError';
 import redisClient from '../utils/connectRedis';
 import { signJwt, verifyJwt } from '../utils/jwt';
-import Email from '../utils/email';
+// import Email from '../utils/email';
 
 const cookiesOptions: CookieOptions = {
   httpOnly: true,
@@ -59,32 +59,38 @@ export const registerUserHandler = async (
       .update(verifyCode)
       .digest('hex');
 
-    const user = await createUser({
+    await createUser({
       name: req.body.name,
       email: req.body.email.toLowerCase(),
       password: hashedPassword,
       verificationCode,
     });
 
-    const redirectUrl = `${config.get<string>(
-      'origin'
-    )}/verifyemail/${verifyCode}`;
-    try {
-      await new Email(user, redirectUrl).sendVerificationCode();
-      await updateUser({ id: user.id }, { verificationCode });
+    res.status(201).json({
+      status: 'success',
+      message:
+        'Success!',
+    });
 
-      res.status(201).json({
-        status: 'success',
-        message:
-          'An email with a verification code has been sent to your email',
-      });
-    } catch (error) {
-      await updateUser({ id: user.id }, { verificationCode: null });
-      return res.status(500).json({
-        status: 'error',
-        message: 'There was an error sending email, please try again',
-      });
-    }
+    // const redirectUrl = `${config.get<string>(
+    //   'origin'
+    // )}/verifyemail/${verifyCode}`;
+    // try {
+    //   await new Email(user, redirectUrl).sendVerificationCode();
+    //   await updateUser({ id: user.id }, { verificationCode });
+
+    //   res.status(201).json({
+    //     status: 'success',
+    //     message:
+    //       'An email with a verification code has been sent to your email',
+    //   });
+    // } catch (error) {
+    //   await updateUser({ id: user.id }, { verificationCode: null });
+    //   return res.status(500).json({
+    //     status: 'error',
+    //     message: 'There was an error sending email, please try again',
+    //   });
+    // }
   } catch (err: any) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       if (err.code === 'P2002') {
@@ -108,7 +114,7 @@ export const loginUserHandler = async (
 
     const user = await findUniqueUser(
       { email: email.toLowerCase() },
-      { id: true, email: true, verified: true, password: true }
+      { id: true, email: true, password: true }
     );
 
     if (!user) {
@@ -116,14 +122,14 @@ export const loginUserHandler = async (
     }
 
     // Check if user is verified
-    if (!user.verified) {
-      return next(
-        new AppError(
-          401,
-          'You are not verified, please verify your email to login'
-        )
-      );
-    }
+    // if (!user.verified) {
+    //   return next(
+    //     new AppError(
+    //       401,
+    //       'You are not verified, please verify your email to login'
+    //     )
+    //   );
+    // }
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return next(new AppError(400, 'Invalid email or password'));
@@ -243,7 +249,7 @@ export const verifyEmailHandler = async (
 
     const user = await updateUser(
       { verificationCode },
-      { verified: true, verificationCode: null },
+      { verificationCode: null },
       { email: true }
     );
 
@@ -287,12 +293,12 @@ export const forgotPasswordHandler = async (
       });
     }
 
-    if (!user.verified) {
-      return res.status(403).json({
-        status: 'fail',
-        message: 'Account not verified',
-      });
-    }
+    // if (!user.verified) {
+    //   return res.status(403).json({
+    //     status: 'fail',
+    //     message: 'Account not verified',
+    //   });
+    // }
 
     if (user.provider) {
       return res.status(403).json({
@@ -319,7 +325,7 @@ export const forgotPasswordHandler = async (
 
     try {
       const url = `${config.get<string>('origin')}/resetpassword/${resetToken}`;
-      await new Email(user, url).sendPasswordResetToken();
+      // await new Email(user, url).sendPasswordResetToken();
 
       res.status(200).json({
         status: 'success',
@@ -359,9 +365,9 @@ export const resetPasswordHandler = async (
 
     const user = await findUser({
       passwordResetToken,
-      passwordResetAt: {
-        gt: new Date(),
-      },
+      // passwordResetAt: {
+      //   gt: new Date(),
+      // },
     });
 
     if (!user) {

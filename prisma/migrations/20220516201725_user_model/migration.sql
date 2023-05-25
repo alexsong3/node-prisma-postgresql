@@ -7,7 +7,7 @@ CREATE TABLE "users" (
     "name" VARCHAR(255) NOT NULL,
     "email" TEXT NOT NULL,
     "photo" TEXT DEFAULT E'default.png',
-    "verified" BOOLEAN DEFAULT false,
+    "verified" BOOLEAN DEFAULT true,
     "password" TEXT NOT NULL,
     "role" "RoleEnumType" DEFAULT E'user',
     "verificationCode" TEXT,

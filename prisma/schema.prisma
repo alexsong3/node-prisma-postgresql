@@ -15,7 +15,7 @@ model User{
   name String  @db.VarChar(255)
   email String @unique
   photo String? @default("default.png")
-  verified Boolean? @default(false) 
+  verified Boolean? @default(true) 
   
   password String
   role RoleEnumType? @default(user)
