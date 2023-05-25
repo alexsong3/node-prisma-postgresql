@@ -324,7 +324,7 @@ export const forgotPasswordHandler = async (
     );
 
     try {
-      const url = `${config.get<string>('origin')}/resetpassword/${resetToken}`;
+      // const url = `${config.get<string>('origin')}/resetpassword/${resetToken}`;
       // await new Email(user, url).sendPasswordResetToken();
 
       res.status(200).json({

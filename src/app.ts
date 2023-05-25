@@ -35,11 +35,23 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // 2. Cors
+  const whitelist = ['https://alexsong3.com/', 'https://www.alexsong3.com/', config.get<string>('origin')]
+  const corsOptions = {
+    origin: function (origin: any, callback: any) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
+    credentials: true,
+  }
   app.use(
-    cors({
-      origin: [config.get<string>('origin')],
-      credentials: true,
-    })
+    cors(corsOptions)
+    // cors({
+    //   origin: [config.get<string>('origin')],
+    //   credentials: true,
+    // })
   );
 
   // 3. Logger
