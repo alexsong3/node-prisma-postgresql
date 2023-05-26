@@ -1,6 +1,6 @@
 export default {
-  redisCacheExpiresIn: 60,
-  refreshTokenExpiresIn: 60,
-  accessTokenExpiresIn: 15,
+  redisCacheExpiresIn: 600,
+  refreshTokenExpiresIn: 600,
+  accessTokenExpiresIn: 150,
   origin: 'http://localhost:3000',
 };

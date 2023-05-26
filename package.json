@@ -7,7 +7,8 @@
     "start": "ts-node-dev --respawn --transpile-only --exit-child src/app.ts",
     "db:migrate": "npx prisma migrate dev --name user-entity --create-only && yarn prisma generate",
     "db:push": "npx prisma db push",
-    "build": "tsc . -p"
+    "build": "tsc . -p",
+    "prod:start": "pm2-runtime app.js"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

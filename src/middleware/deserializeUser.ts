@@ -22,6 +22,9 @@ export const deserializeUser = async (
       access_token = req.cookies.access_token;
     }
 
+    console.log("555", req.headers)
+    console.log("7777", req.cookies)
+    console.log("8888", access_token)
     if (!access_token) {
       return next(new AppError(401, 'You are not logged in'));
     }
